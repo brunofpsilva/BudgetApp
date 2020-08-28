@@ -103,7 +103,8 @@ var UIController = (function () {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expenseLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     };
 
     return {
@@ -121,7 +122,7 @@ var UIController = (function () {
             // Create HTML string whith placeholder text
             if (type == 'inc') {
                 element = DOMstrings.incomeContainer;
-                html = `<div class="item clearfix" id="%id%">
+                html = `<div class="item clearfix" id="inc-%id%">
                             <div class="item__description">%description%</div>
                             <div class="right clearfix">
                                 <div class="item__value">%value%</div>
@@ -132,7 +133,7 @@ var UIController = (function () {
                         </div>`
             } else if (type == 'exp') {
                 element = DOMstrings.expenseContainer;
-                html = `<div class="item clearfix" id="%id%">
+                html = `<div class="item clearfix" id="exp-%id%">
                             <div class="item__description">%description%</div>
                             <div class="right clearfix">
                                 <div class="item__value">%value%</div>
@@ -192,12 +193,15 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     var setupEventListeners = function () {
         var DOM = UICtrl.getDOMstrings();
+
         document.querySelector(DOM.inputBtn).addEventListener("click", ctrlAddItem);
+
         document.addEventListener("keypress", function (event) {
-            if (event.keyCode === 13 || event.which === 13) {
-                ctrlAddItem();
-            }
+            if (event.keyCode === 13 || event.which === 13) ctrlAddItem();
         });
+
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem)
+
     }
 
     var updateBudget = function () {
@@ -234,6 +238,26 @@ var controller = (function (budgetCtrl, UICtrl) {
             updateBudget();
         }
     }
+
+    var ctrlDeleteItem = function (event) {
+        var itemID, splitID, type, ID;
+
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        if (itemID) {
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = splitID[1];
+        }
+
+        // 1. Delete the item from the data structure
+
+        // 2. Delete the item from the UI
+
+        // 3. Update and show the new budget
+    }
+
+
 
     return {
         init: function () {
